@@ -27,10 +27,15 @@ export async function sendNotification({ userId, title, body, type = 'info', dat
 
 export async function sendNotificationToAll({ title, body, type = 'info' }) {
   const { data: users } = await supabase.from('users').select('id, fcm_token')
-  for (const user of users || []) {
-    await supabase.from('notifications').insert({
-      user_id: user.id, title, body, type, read: false
-    })
+  if (users && users.length > 0) {
+    const payloads = users.map(user => ({
+      user_id: user.id,
+      title,
+      body,
+      type,
+      read: false
+    }))
+    await supabase.from('notifications').insert(payloads)
   }
   // Batch FCM via edge function
   const tokens = (users || []).map(u => u.fcm_token).filter(Boolean)

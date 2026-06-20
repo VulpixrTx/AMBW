@@ -17,7 +17,7 @@ export default function EventForm({ initial = {}, onSave, isEdit = false }) {
 
   const [form, setForm] = useState({
     title: '', description: '', category: 'Seminar',
-    date: null, max_capacity: 100, location_name: '',
+    max_capacity: 100, location_name: '',
     lat: null, lng: null, status: 'draft',
     ...initial,
     date: initial.date ? new Date(initial.date) : null,

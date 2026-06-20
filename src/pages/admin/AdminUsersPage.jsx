@@ -6,6 +6,7 @@ import { useAuthStore } from '@/store/authStore'
 import Spinner from '@/components/ui/Spinner'
 
 const ROLE_OPTIONS = ['peserta', 'organizer', 'admin']
+const ROLE_LABELS = { peserta: 'Peserta', organizer: 'Organizer', admin: 'Admin' }
 const ROLE_BADGE = { peserta: 'badge-blue', organizer: 'badge-green', admin: 'badge-brand' }
 
 export default function AdminUsersPage() {
@@ -72,7 +73,7 @@ export default function AdminUsersPage() {
                 disabled={u.id === currentUser.id}
                 className="input text-xs w-28 py-1.5"
               >
-                {ROLE_OPTIONS.map(r => <option key={r} value={r}>{r}</option>)}
+                {ROLE_OPTIONS.map(r => <option key={r} value={r}>{ROLE_LABELS[r] || r}</option>)}
               </select>
             </div>
           ))}

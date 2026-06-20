@@ -36,7 +36,13 @@ export default function BottomNav() {
         {!user && (
           <NavLink
             to="/login"
-            className="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-xs font-body text-brand-500"
+            className={({ isActive }) =>
+              `flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-xs font-body transition-colors ${
+                isActive
+                  ? 'text-brand-500'
+                  : 'text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+              }`
+            }
           >
             <User size={20} strokeWidth={1.8} />
             Masuk

@@ -24,6 +24,7 @@ export default function NotificationsPage() {
       setLoading(false)
       // Mark all as read
       await supabase.from('notifications').update({ read: true }).eq('user_id', user.id).eq('read', false)
+      setNotifs(prev => prev.map(n => ({ ...n, read: true })))
     }
     fetch()
   }, [user])

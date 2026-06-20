@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { User, Moon, Sun, Save, Camera } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { supabase } from '@/lib/supabase'
@@ -16,6 +16,12 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const fileRef = useRef()
+
+  useEffect(() => {
+    if (profile?.name) {
+      setName(profile.name)
+    }
+  }, [profile])
 
   const handleSave = async () => {
     setSaving(true)

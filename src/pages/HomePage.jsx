@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase'
 import EventCard from '@/components/events/EventCard'
 import Spinner from '@/components/ui/Spinner'
 
-const CATEGORIES = ['Semua', 'Seminar', 'Workshop', 'Konser', 'Bazaar']
+const CATEGORIES = ['Semua', 'Seminar', 'Workshop', 'Konser', 'Bazaar', 'Lainnya']
 
 export default function HomePage() {
   const [events, setEvents] = useState([])

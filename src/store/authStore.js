@@ -15,11 +15,12 @@ export const useAuthStore = create(
       setLoading: (loading) => set({ loading }),
 
       fetchProfile: async (uid) => {
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from('users')
           .select('*')
           .eq('id', uid)
-          .single()
+          .maybeSingle()
+        if (error) console.warn('[fetchProfile] error:', error.message)
         if (data) set({ profile: data })
         return data
       },
@@ -30,16 +31,20 @@ export const useAuthStore = create(
         return data
       },
 
-      signUp: async (email, password, name) => {
+      signUp: async (email, password, name, role) => {
         const { data, error } = await supabase.auth.signUp({ email, password })
         if (error) throw error
         if (data.user) {
-          await supabase.from('users').insert({
+          const { error: insertError } = await supabase.from('users').insert({
             id: data.user.id,
             email,
             name,
             role,
           })
+          if (insertError) {
+            console.error('[signUp] Gagal insert ke tabel users:', insertError.message)
+            throw new Error('Gagal menyimpan profil: ' + insertError.message)
+          }
         }
         return data
       },

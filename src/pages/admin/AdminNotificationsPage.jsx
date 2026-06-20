@@ -48,11 +48,10 @@ export default function AdminNotificationsPage() {
                 key={t.value}
                 type="button"
                 onClick={() => set('type', t.value)}
-                className={`p-3 rounded-xl border-2 text-center transition-all ${
-                  form.type === t.value
-                    ? 'border-brand-500 bg-brand-50 dark:bg-brand-900/20'
-                    : 'border-gray-200 dark:border-surface-3 hover:border-brand-300'
-                }`}
+                className={`p-3 rounded-xl border-2 text-center transition-all ${form.type === t.value
+                  ? 'border-brand-500 bg-brand-50 dark:bg-brand-900/20'
+                  : 'border-gray-200 dark:border-surface-3 hover:border-brand-300'
+                  }`}
               >
                 <div className="text-lg">{t.label.split(' ')[0]}</div>
                 <div className="text-xs font-semibold text-gray-700 dark:text-gray-200 mt-0.5">{t.desc}</div>

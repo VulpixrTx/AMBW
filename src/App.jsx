@@ -43,20 +43,19 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session?.user) {
         setUser(session.user)
-        fetchProfile(session.user.id).then(() => {
-          initFCM()
-        })
+        await fetchProfile(session.user.id)
+        initFCM()
       }
       setLoading(false)
     })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_e, session) => {
       if (session?.user) {
         setUser(session.user)
-        fetchProfile(session.user.id)
+        await fetchProfile(session.user.id)
       } else {
         setUser(null)
       }

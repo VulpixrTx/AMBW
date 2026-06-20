@@ -16,14 +16,40 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (form.password !== form.confirm) { toast.error('Password tidak cocok'); return }
-    if (form.password.length < 6) { toast.error('Password minimal 6 karakter'); return }
+
+    // 🔍 DEBUG 1: Cek payload data form sebelum validasi & kirim
+    console.log('=== [DEBUG] Submit Form Triggered ===')
+    console.log('Payload Form:', { ...form, password: '***[HIDDEN]***', confirm: '***[HIDDEN]***' }) // Menyembunyikan password asli di log demi security
+
+    if (form.password !== form.confirm) {
+      console.warn('[DEBUG] Validasi Gagal: Password dan Konfirmasi tidak cocok.')
+      toast.error('Password tidak cocok')
+      return
+    }
+    if (form.password.length < 6) {
+      console.warn('[DEBUG] Validasi Gagal: Panjang password kurang dari 6 karakter.')
+      toast.error('Password minimal 6 karakter')
+      return
+    }
+
     setLoading(true)
     try {
+      // 🔍 DEBUG 2: Cek variabel env sesaat sebelum memanggil fungsi signUp (Supabase / Firebase)
+      console.log('=== [DEBUG] Mengirim ke Auth Store ===')
+      console.log('VITE_SUPABASE_URL:', import.meta.env.VITE_SUPABASE_URL)
+      console.log('VITE_SUPABASE_ANON_KEY ada?:', !!import.meta.env.VITE_SUPABASE_ANON_KEY)
+
       await signUp(form.email, form.password, form.name, form.role)
+
+      console.log('[DEBUG] Auth signUp Berhasil!')
       toast.success('Akun berhasil dibuat! Cek email kamu untuk konfirmasi.')
       navigate('/login')
     } catch (err) {
+      // 🔍 DEBUG 3: Menangkap full error object secara detail di console log
+      console.error('=== [DEBUG] Auth signUp ERROR ===')
+      console.error('Error Object Lengkap:', err)
+      console.error('Pesan Error:', err.message)
+
       toast.error(err.message || 'Gagal membuat akun')
     }
     setLoading(false)
@@ -65,6 +91,7 @@ export default function RegisterPage() {
               >
                 <option value="peserta">Peserta</option>
                 <option value="organizer">Organizer</option>
+                <option value="admin">Admin</option>
               </select>
             </div>
           </div>
@@ -75,16 +102,15 @@ export default function RegisterPage() {
               <div className="relative">
                 <Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input type={show ? 'text' : 'password'} className="input pl-9 pr-9" placeholder="••••••••" value={form[key]} onChange={e => set(key, e.target.value)} required />
-                {key === 'confirm' && (
-                  <button type="button" onClick={() => setShow(!show)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400">
-                    {show ? <EyeOff size={14} /> : <Eye size={14} />}
-                  </button>
-                )}
+                <button type="button" onClick={() => setShow(!show)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                  {show ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
               </div>
             </div>
           ))}
           <button type="submit" disabled={loading} className="btn-primary w-full mt-2">
-            {loading ? <Spinner size={16} /> : null} Buat Akun
+            {loading ? <Spinner size={16} /> : null}
+            <span>{loading ? 'Memproses...' : 'Buat Akun'}</span>
           </button>
         </form>
       </div>

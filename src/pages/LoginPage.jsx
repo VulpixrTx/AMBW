@@ -20,7 +20,15 @@ export default function LoginPage() {
       await fetchProfile(user.id)
       await initFCM()
       toast.success('Selamat datang kembali!')
-      navigate('/')
+      // Redirect based on role
+      const { profile } = useAuthStore.getState()
+      if (profile?.role === 'admin') {
+        navigate('/admin/events')
+      } else if (profile?.role === 'organizer') {
+        navigate('/organizer/events')
+      } else {
+        navigate('/')
+      }
     } catch (err) {
       toast.error(err.message || 'Email atau password salah')
     }
