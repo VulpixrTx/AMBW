@@ -1,4 +1,5 @@
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
+import { useEffect, useRef } from 'react'
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet'
 import L from 'leaflet'
 
 // Fix default marker icon
@@ -28,6 +29,20 @@ function ClickHandler({ onMapClick }) {
   return null
 }
 
+// Komponen internal: fly ke koordinat baru saat lat/lng berubah
+function FlyTo({ lat, lng }) {
+  const map = useMap()
+  const prevRef = useRef(null)
+  useEffect(() => {
+    if (!lat || !lng) return
+    const key = `${lat},${lng}`
+    if (prevRef.current === key) return
+    prevRef.current = key
+    map.flyTo([lat, lng], 16, { animate: true, duration: 1.2 })
+  }, [lat, lng, map])
+  return null
+}
+
 export default function EventMap({
   lat, lng, locationName,
   editable = false, onLocationChange,
@@ -47,6 +62,7 @@ export default function EventMap({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {editable && <ClickHandler onMapClick={(latlng) => onLocationChange?.(latlng)} />}
+      <FlyTo lat={lat} lng={lng} />
       {lat && lng && (
         <Marker position={[lat, lng]} icon={brandIcon}>
           {locationName && (

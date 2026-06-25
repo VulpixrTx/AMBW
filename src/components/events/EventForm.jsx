@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/store/authStore'
 import EventMap from '@/components/map/EventMap'
+import LocationSearch from '@/components/map/LocationSearch'
 import Spinner from '@/components/ui/Spinner'
 
 const CATEGORIES = ['Seminar', 'Workshop', 'Konser', 'Bazaar', 'Lainnya']
@@ -39,6 +40,11 @@ export default function EventForm({ initial = {}, onSave, isEdit = false }) {
     set('lat', latlng.lat)
     set('lng', latlng.lng)
     toast.success('Lokasi dipilih di peta')
+  }
+
+  const handleLocationSelect = (name, lat, lng) => {
+    setForm(f => ({ ...f, location_name: name, lat, lng }))
+    if (name) toast.success('Lokasi ditemukan!')
   }
 
   const handleSubmit = async (e) => {
@@ -147,8 +153,17 @@ export default function EventForm({ initial = {}, onSave, isEdit = false }) {
         </div>
 
         <div className="md:col-span-2 space-y-1">
-          <label className="text-xs font-semibold text-gray-600 dark:text-gray-300">Nama Lokasi / Venue</label>
-          <input className="input" value={form.location_name} onChange={e => set('location_name', e.target.value)} placeholder="Gedung A, Jl. Contoh No.1" />
+          <label className="text-xs font-semibold text-gray-600 dark:text-gray-300 flex items-center gap-1.5">
+            <MapPin size={12} /> Cari Nama Lokasi / Venue
+          </label>
+          <LocationSearch
+            value={form.location_name}
+            onChange={handleLocationSelect}
+            placeholder="Ketik nama tempat, misal: Universitas Kristen Petra..."
+          />
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+            💡 Pilih dari hasil pencarian untuk otomatis pin lokasi di peta. Atau klik langsung di peta.
+          </p>
         </div>
 
         <div className="md:col-span-2 space-y-2">
